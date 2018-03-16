@@ -1,0 +1,8 @@
+[memories] [
+    name = "test",
+    tags = ["curl", "post"],
+    commands = [
+        "curl -H "Content-Type: application/json" -X POST -d '{"username":"xyz","password":"xyz"}' http://ip:port/endpoint",
+        "curl --data "param1=value1&param2=value2" https://ip:port/endpoint"
+    ]
+]
