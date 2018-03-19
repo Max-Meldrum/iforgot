@@ -3,7 +3,9 @@ extern crate toml;
 #[macro_use]
 extern crate serde_derive;
 
-
+use std::fs;
+use std::path::Path;
+use std::env;
 use std::vec::Vec;
 use std::fs::File;
 use std::io::prelude::*;
@@ -35,6 +37,8 @@ impl Memory {
 }
 
 fn main() {
+    init();
+
     let matches = App::new("iforgot")
         .version("0.1.0")
         .author("Max Meldrum <max@meldrum.se>")
@@ -51,6 +55,26 @@ fn main() {
     let memories = analyze_memory(key, &config.memories);
     for mem in &memories {
         println!("{}", mem.fmt())
+    }
+
+}
+
+fn init() -> () {
+    match env::home_dir() {
+        Some(path) => {
+            let mut iforgot_path = path.display()
+                .to_string()
+                .to_owned();
+            iforgot_path.push_str("/.iforgot");
+
+            let exists = Path::new(&iforgot_path).exists();
+            if !exists {
+                fs::create_dir_all(&iforgot_path).expect("Could not create iforgot directory!");
+                iforgot_path.push_str("/iforgot.toml");
+                File::create(iforgot_path).expect("Could not create config!");
+            }
+        }
+        None => println!("Hmm, your OS is not supported!"),
     }
 }
 
