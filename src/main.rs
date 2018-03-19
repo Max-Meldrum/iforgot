@@ -4,21 +4,34 @@ extern crate toml;
 extern crate serde_derive;
 
 
+use std::vec::Vec;
 use std::fs::File;
 use std::io::prelude::*;
 use clap::{Arg, App};
-use std::path::Path;
 
 #[derive(Deserialize, Debug)]
 struct Config {
-    memories: Vec<Memory>
+    pub memories: Vec<Memory>
 }
 
 #[derive(Deserialize, Debug)]
 struct Memory {
     name: String,
-    tags: Vec<String>,
+    pub tags: Vec<String>,
     commands: Vec<String>
+}
+
+impl Memory {
+    fn fmt(&self) -> String {
+        let mut res = String::new();
+        res.push_str(&self.name);
+        res.push('\n');
+        for cmd in &self.commands {
+            res.push_str(cmd);
+            res.push('\n');
+        }
+        res
+    }
 }
 
 fn main() {
@@ -33,10 +46,12 @@ fn main() {
                  .help("Search term"))
         .get_matches();
 
-    let _key = matches.value_of("KEY").unwrap();
-
+    let key = matches.value_of("KEY").unwrap().to_string();
     let config = get_lost_memory();
-    println!("{:?}", config.memories);
+    let memories = analyze_memory(key, &config.memories);
+    for mem in &memories {
+        println!("{}", mem.fmt())
+    }
 }
 
 fn get_lost_memory() -> Config {
@@ -44,7 +59,16 @@ fn get_lost_memory() -> Config {
     let mut file = File::open(&path).expect("Failed to open config file!");
     let mut contents = String::new();
     file.read_to_string(&mut contents).expect("Failed reading file");
-    println!("{}", contents);
     toml::from_str(&contents).unwrap()
+}
+
+fn analyze_memory(key: String, memories: &Vec<Memory>) -> Vec<&Memory> {
+    let mut result = Vec::new();
+    for x in 0..memories.len() {
+        if memories[x].tags.contains(&key) {
+            result.push(&memories[x])
+        }
+    }
+    result
 }
 

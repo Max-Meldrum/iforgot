@@ -1,8 +1,9 @@
-[memories] [
-    name = "test",
-    tags = ["curl", "post"],
-    commands = [
-        "curl -H "Content-Type: application/json" -X POST -d '{"username":"xyz","password":"xyz"}' http://ip:port/endpoint",
-        "curl --data "param1=value1&param2=value2" https://ip:port/endpoint"
-    ]
-]
+[[memories]]
+name = "curl"
+tags = ["curl", "post"]
+commands = ["curl -H \"Content-Type: application/json\" -X POST -d '{\"username\":\"xyz\",\"password\":\"xyz\"}' http://ip:port/endpoint"]
+
+[[memories]]
+name = "pdfpng"
+tags = ["convert", "pdf", "png", "latex"]
+commands = ["convert -density 150 input.pdf -quality 90 output.png"]
