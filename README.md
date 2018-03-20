@@ -7,9 +7,8 @@ Installing iforgot
 $ sudo curl -L -o /usr/local/bin/iforgot https://git.io/vxZYX && sudo chmod +x /usr/local/bin/iforgot
 ```
 
-![alt text](https://github.com/Max-Meldrum/iforgot/blob/master/img/iforgot.PNG?raw=true "iforgot")
+![](img/iforgot.png?raw=true)
 
 
-
-![alt text](https://github.com/Max-Meldrum/iforgot/blob/master/img/pdfpng.PNG?raw=true "pdfpng")
+![](img/pdfpng.png?raw=true)
 
