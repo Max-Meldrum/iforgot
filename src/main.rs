@@ -37,7 +37,6 @@ impl Memory {
 }
 
 fn main() {
-    init();
 
     let matches = App::new("iforgot")
         .version("0.1.0")
@@ -47,19 +46,23 @@ fn main() {
                  .required(true)
                  .takes_value(true)
                  .index(1)
-                 .help("Search term"))
+                 .help("Search key"))
         .get_matches();
 
-    let key = matches.value_of("KEY").unwrap().to_string();
-    let config = get_lost_memory();
-    let memories = analyze_memory(key, &config.memories);
-    for mem in &memories {
-        println!("{}", mem.fmt())
+    match init() {
+        Some(path) => {
+            let key = matches.value_of("KEY").unwrap().to_string();
+            let config = get_lost_memory(path);
+            let memories = analyze_memory(key, &config.memories);
+            for mem in &memories {
+                println!("{}", mem.fmt())
+            }
+        }
+        None => println!("Failed to fetch config")
     }
-
 }
 
-fn init() -> () {
+fn init() -> Option<String> {
     match env::home_dir() {
         Some(path) => {
             let mut iforgot_path = path.display()
@@ -68,18 +71,21 @@ fn init() -> () {
             iforgot_path.push_str("/.iforgot");
 
             let exists = Path::new(&iforgot_path).exists();
+            fs::create_dir_all(&iforgot_path).expect("Could not create iforgot directory!");
+            iforgot_path.push_str("/iforgot.toml");
             if !exists {
-                fs::create_dir_all(&iforgot_path).expect("Could not create iforgot directory!");
-                iforgot_path.push_str("/iforgot.toml");
-                File::create(iforgot_path).expect("Could not create config!");
+                File::create(&iforgot_path).expect("Could not create config!");
             }
+            Some(iforgot_path)
         }
-        None => println!("Hmm, your OS is not supported!"),
+        None => {
+            println!("Hmm, your OS is not supported!");
+            None
+        }
     }
 }
 
-fn get_lost_memory() -> Config {
-    let path = "iforgot.toml";
+fn get_lost_memory(path: String) -> Config {
     let mut file = File::open(&path).expect("Failed to open config file!");
     let mut contents = String::new();
     file.read_to_string(&mut contents).expect("Failed reading file");
