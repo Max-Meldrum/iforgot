@@ -1,9 +1,0 @@
-[[memories]]
-name = "curl"
-tags = ["curl", "post"]
-commands = ["curl -H \"Content-Type: application/json\" -X POST -d '{\"username\":\"xyz\",\"password\":\"xyz\"}' http://ip:port/endpoint"]
-
-[[memories]]
-name = "pdfpng"
-tags = ["convert", "pdf", "png", "latex"]
-commands = ["convert -density 150 input.pdf -quality 90 output.png"]
